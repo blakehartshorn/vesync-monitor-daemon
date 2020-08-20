@@ -1,0 +1,39 @@
+VeSync:
+  email: your@email.fake
+  password: vesyncpassword
+
+InfluxDB:
+  hostname: 127.0.0.1
+  port: 8086
+  database: vesync
+  username: root
+  password: root
+
+Settings:
+  interval: 60 # seconds
+
+Logging:
+
+  version: 1
+
+  formatters:
+    simple:
+      format: "%(asctime)s %(levelname)s: %(message)s"
+
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: simple
+      stream: ext://sys.stdout
+
+    file_handler:
+      class: logging.handlers.RotatingFileHandler
+      level: DEBUG
+      formatter: simple
+      filename: vesync.log
+      maxBytes: 8192
+      backupCount: 3
+
+  root:
+    handlers: [console, file_handler]

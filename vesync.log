@@ -1,0 +1,11 @@
+2020-08-19 20:57:19,257 root INFO: Test
+2020-08-19 21:14:46,987 root INFO: Test
+2020-08-19 21:16:18,624 root WARNING: Test
+2020-08-19 21:20:22,785 WARNING: Test
+2020-08-19 21:21:12,544 WARNING: Test
+2020-08-19 21:33:02,563 WARNING: Test
+2020-08-19 21:33:09,057 INFO: Starting VeSync monitoring daemon
+2020-08-19 21:33:30,760 INFO: Starting VeSync monitoring daemon
+2020-08-19 21:33:44,556 INFO: Starting VeSync monitoring daemon
+2020-08-19 21:34:03,081 INFO: Starting VeSync monitoring daemon
+2020-08-19 21:34:03,236 INFO: Fetching VeSync devices
