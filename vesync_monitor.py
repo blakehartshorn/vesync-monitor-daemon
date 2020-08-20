@@ -29,9 +29,6 @@ vesync_client = VeSync(
 if not vesync_client.login():
     logging.critical("Could not login to VeSync")
     sys.exit(1)
-else:
-    logging.info("Fetching VeSync devices")
-    vesync_client.update()
 
 while True:
 
@@ -39,6 +36,7 @@ while True:
 
     try:
         logging.info("Updating energy information")
+        vesync_client.update()
         vesync_client.update_energy()
         now = datetime.utcnow().isoformat()
     except Exception as e:
