@@ -3,11 +3,10 @@ VeSync:
   password: vesyncpassword
 
 InfluxDB:
-  hostname: 127.0.0.1
-  port: 8086
-  database: vesync
-  username: root
-  password: root
+  url: http://127.0.0.1:8086
+  bucket: vesync
+  token: tokengoeshere
+  org: my-org
 
 Settings:
   interval: 60 # seconds
