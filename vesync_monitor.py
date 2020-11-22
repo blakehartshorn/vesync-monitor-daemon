@@ -2,7 +2,8 @@
 
 import logging, logging.config, sys, time, yaml
 from datetime import datetime
-from influxdb import InfluxDBClient
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
 from pyvesync import VeSync
 
 with open('config.yaml','r') as f:
@@ -13,12 +14,12 @@ logging.config.dictConfig(config['Logging'])
 logging.info("Starting VeSync monitoring daemon")
 
 influx_client = InfluxDBClient(
-    config['InfluxDB']['hostname'],
-    config['InfluxDB']['port'],
-    config['InfluxDB']['username'],
-    config['InfluxDB']['password'],
-    config['InfluxDB']['database']
+    url=config['InfluxDB']['url'],
+    token=config['InfluxDB']['token'],
+    org=config['InfluxDB']['org']
 )
+
+influx_writer = influx_client.write_api(write_options=SYNCHRONOUS)
 
 vesync_client = VeSync(
     config['VeSync']['email'],
@@ -45,32 +46,21 @@ while True:
 
     try:
         for outlet in vesync_client.outlets:
-            if outlet.voltage == 0:
-                logging.warning("Could not determine voltage for %s. Is the outlet on?", outlet.device_name)
-                continue
-            influx_payload.append({
-                "measurement": "voltage",
-                "tags": {
-                    "device_name": outlet.device_name,
-                },
-                "time": now,
-                "fields": {
-                    "value": outlet.voltage,
-                }
-            })
-            influx_payload.append({
-                "measurement": "power",
-                "tags": {
-                    "device_name": outlet.device_name,
-                },
-                "time": now,
-                "fields": {
-                    "value": outlet.power,
-                }
-            })
+
+            influx_payload.append(
+                Point("voltage")
+                .tag("device_name", outlet.device_name)
+                .field("value", outlet.voltage)
+            )
+
+            influx_payload.append(
+                Point("power")
+                .tag("device_name", outlet.device_name)
+                .field("value", outlet.power)
+            )
 
         logging.debug("Writing payload: %s", influx_payload)
-        influx_client.write_points(influx_payload)
+        influx_writer.write(bucket=config['InfluxDB']['bucket'], record=influx_payload)
         time.sleep(config['Settings']['interval'])
 
     except Exception as e:
