@@ -47,6 +47,10 @@ while True:
     try:
         for outlet in vesync_client.outlets:
 
+            if outlet.voltage == 0:
+                logging.warning("Could not determine voltage for %s. Is the outlet on?", outlet.device_name)
+                continue
+
             influx_payload.append(
                 Point("voltage")
                 .tag("device_name", outlet.device_name)
